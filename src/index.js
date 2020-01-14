@@ -7,8 +7,8 @@ const newQuoteForm = document.querySelector("#new-quote-form")
 newQuoteForm.addEventListener('submit', (e) => {
     e.preventDefault()
     // debugger
-    let quote = e.target["new-quote"].value // -
-    let author = e.target.author.value //no -
+    let quote = e.target["new-quote"].value // with hyphen
+    let author = e.target.author.value //no hypen
     fetch(`http://localhost:3000/quotes`, {
         method: "POST",
         headers: {
@@ -22,8 +22,12 @@ newQuoteForm.addEventListener('submit', (e) => {
     })
     .then(res => res.json())
     .then(newQuote => makeAnotherFetch())
+    //newQuote returns the instance of the quote without the likes assocation
+    //call makeAnotherFetch() to handle the likes association
+
 })
 
+//this function is to get the appropriate quote object with likes array
 function makeAnotherFetch(){
     fetch(`http://localhost:3000/quotes?_embed=likes`)
     .then(res => res.json())
@@ -39,16 +43,6 @@ function loadData(){
 }
 
 function createElement(quote){
-    // console.log(quote)
-    // <li class='quote-card'>
-    //   <blockquote class="blockquote">
-    //     <p class="mb-0">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-    //     <footer class="blockquote-footer">Someone famous</footer>
-    //     <br>
-    //     <button class='btn-success'>Likes: <span>0</span></button>
-    //     <button class='btn-danger'>Delete</button>
-    //   </blockquote>
-    // </li>
     const li = document.createElement("li")
     li.className = "quote-card"
     li.innerHTML = `<blockquote class="blockquote">
@@ -86,8 +80,7 @@ function createElement(quote){
         .then(res => res.json())
         .then(newLike => {
             let buttonSpan = li.querySelector("button span")
-            quote.likes.push(newLike) //updating JS runtime memory 
-            // debugger
+            quote.likes.push(newLike) //update JS runtime memory 
             buttonSpan.innerText = quote.likes.length
             // buttonSpan.innerText = parseInt(buttonSpan.innerText) + 1 //does not update memory
             // console.log(quote.likes)
